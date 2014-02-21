@@ -5,10 +5,14 @@
 
         <link rel="canonical" href="/" />
 
+        <link rel="stylesheet" href="/_s/css/bootstrap-3.1.1.css"></link>
+        <link rel="stylesheet" href="/_s/css/bootstrap-theme-3.1.1.css"></link>
         <link rel="stylesheet" href="/_s/css/style.css"></link>
 
         <script src="/_s/js/jquery-1.11.0.js"></script>
         <script src="/_s/js/angular-1.2.13.js"></script>
+        <script src="/_s/js/bootstrap-3.1.1.js"></script>
+
         <script src="/_s/js/client.js"></script>
     </head>
     <body
@@ -16,19 +20,27 @@
         ng-app="jbitor.client"
         ng-controller="jbitorClientController"
     >
+        <div class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="/">jbitor</a>
+                </div>
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        <li class="active"><a>DHT</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
 
-        <section>
-            <h1>jbitor</h1>
-
-            <h2>
-                DHT Client Nodes
-            </h2>
-
-            <ul>
-                <li>Good nodes: {{dht.nodeCounts.GoodNodes}}</li>
-                <li>Unknown nodes: {{dht.nodeCounts.UnknownNodes}}</li>
-                <li>Bad nodes: {{dht.nodeCounts.BadNodes}}</li>
-            </ul>
-        </sction>
+        <div class="container theme-showcase">
+            <section>
+                <ul>
+                    <li>Good nodes: {{dht.nodeCounts.GoodNodes}}</li>
+                    <li>Unknown nodes: {{dht.nodeCounts.UnknownNodes}}</li>
+                    <li>Bad nodes: {{dht.nodeCounts.BadNodes}}</li>
+                </ul>
+            </sction>
+        </div>
     </body>
 </html>

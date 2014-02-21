@@ -1,16 +1,4 @@
-html {
-    background: #123;
-    font-family: Georgia, serif;
-    line-height: 1.25em;
-}
-
-body > section {
-    background: white;
-    padding: 1em;
-    margin: 2em auto;
-    border-top-left-radius: 1em;
-    border-bottom-right-radius: 1em;
-    border: .5em double #123;
-    color: black;
-    max-width: 30em;
+body {
+    padding-top: 70px;
+    padding-bottom: 30px;
 }
