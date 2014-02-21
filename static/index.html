@@ -65,19 +65,34 @@
             </div>
             <div class="panel-body">
               <p>
-                Find peers for a torrent.
+                Find peers for a torrent from the DHT, and generate
+                a magnet link that can be used to start downloading
+                from these peers.
               </p>
 
-              <form ng-submit="console.log(2)">
-                <label>
-                  infohash:
-                  <input placeholder="3c44dd30710c4d98d8ded1612428d7f9b3a6e44e"></input>
-                </label>
-                <button type="submit" class="btn btn-primary">
-                  Find
-                </button>
+              <form ng-submit="findPeers.onSubmit($event)">
+                <div class="form-group">
+                  <label>
+                    Torrent infohash:
+                  </label>
+                  <input
+                    class="form-control btid-control"
+                    placeholder="3c44dd30710c4d98d8ded1612428d7f9b3a6e44e"
+                    ng-model="findPeers.infohash"
+                  ></input>
+                </div>
+                <div class="form-group text-center">
+                  <button
+                    type="submit"
+                    class="btn btn-primary"
+                    ng-disabled="!findPeers.infohash"
+                  >
+                    Find Peers
+                  </button>
+                </div>
               </form>
-
+            </div>
+            <div class="panel-body" style="border-top: 2px solid #ddd;">
               <h4>Results</h4>
 
               <p>
