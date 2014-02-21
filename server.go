@@ -24,15 +24,14 @@ func ServeForDhtClient(dhtClient dht.Client) (err error) {
 		"/_s/", http.FileServer(http.Dir(path))))
 
 	http.HandleFunc("/api/nodeCounts.json", func(w http.ResponseWriter, r *http.Request) {
+		logger.Printf("Serving nodeCounts to %v.\n", r.RemoteAddr)
+
 		s, err := json.Marshal(dhtClient.ConnectionInfo())
 
 		if err != nil {
 			panic("How did JSON encoding possibly fail?")
 		}
 
-		w.Header().Set("Content-Type", "application/json")
-		w.Header().Set("Access-Control-Allow-Origin", "*")
-		w.Header().Set("Access-Control-Allow-Methods", "GET, OPTIONS")
 		w.Write(s)
 	})
 

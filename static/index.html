@@ -1,14 +1,34 @@
 <!doctype html>
 <html>
     <head>
-        <title>
-            jbitor
-        </title>
+        <title>jbitor</title>
+
         <link rel="canonical" href="/" />
-        <base href="/" />
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+
+        <link rel="stylesheet" href="/_s/css/style.css"></link>
+
+        <script src="/_s/js/jquery-1.11.0.js"></script>
+        <script src="/_s/js/angular-1.2.13.js"></script>
         <script src="/_s/js/client.js"></script>
     </head>
-    <body>
+    <body
+        ng-cloak
+        ng-app="jbitor.client"
+        ng-controller="jbitorClientController"
+    >
+
+        <section>
+            <h1>jbitor</h1>
+
+            <h2>
+                DHT Client Nodes
+            </h2>
+
+            <ul>
+                <li>Good nodes: {{dht.nodeCounts.GoodNodes}}</li>
+                <li>Unknown nodes: {{dht.nodeCounts.UnknownNodes}}</li>
+                <li>Bad nodes: {{dht.nodeCounts.BadNodes}}</li>
+            </ul>
+        </sction>
     </body>
 </html>
