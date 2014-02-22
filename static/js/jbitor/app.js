@@ -20,7 +20,7 @@ angular.module('jbitor.app', [])
         dht: {
             connectionInfo: {},
             peerSearches: []
-        },
+        }
     };
 
     // Constantly reload the clientState from the server.
