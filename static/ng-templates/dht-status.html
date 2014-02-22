@@ -22,9 +22,9 @@
       </div>
 
       <div>
-        <strong>{{ dht.nodeCounts.GoodNodes }}</strong> good nodes,
-        <strong>{{ dht.nodeCounts.UnknownNodes }}</strong> unknown nodes, and
-        <strong>{{ dht.nodeCounts.BadNodes }}</strong> bad nodes.
+        <strong>{{ dht.connectionInfo().GoodNodes }}</strong> good nodes,
+        <strong>{{ dht.connectionInfo().UnknownNodes }}</strong> unknown nodes, and
+        <strong>{{ dht.connectionInfo().BadNodes }}</strong> bad nodes.
       </div>
     </div>
   </div>

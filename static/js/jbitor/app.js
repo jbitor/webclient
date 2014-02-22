@@ -12,13 +12,58 @@ angular.module('jbitor.app', [])
 
 .controller('jbitorAppController', function(
     $scope,
-    DHTStatusModel,
+    $interval,
     DHTFindPeersModel
 ) {
-    $scope.dht = new DHTStatusModel();
-    $scope.dht.startUpdating(750, $scope);
+    $scope.connectionError = null;
+    $scope.clientState = {
+        dht: {
+            connectionInfo: {},
+            peerRequests: []
+        },
+    };
 
-    $scope.findPeers = new DHTFindPeersModel();
+    // Constantly reload the clientState from the server.
+    var intervalPromise = $interval(function() {
+        $.getJSON('/api/clientState.json').then(function(state) {
+            $scope.$apply(function() {
+                $scope.connectionError = null;
+                $scope.clientState = state;
+            });
+        }, function(err) {
+            $scope.$apply(function() {
+                $scope.connectionError = true;
+                console.error("Failed to get update client state", err);
+            });
+        });
+    }, 750);
+
+    $scope.$on('$destroy', function() {
+        $interval.cancel(intervalPromise);
+    });
+
+    $scope.dht = {
+        connectionInfo: function() {
+            return $scope.clientState.dht.connectionInfo;
+        },
+        peerRequests: function() {
+            return $scope.clientState.dht.peerRequests;
+        },
+        health: function() {
+            if (this.connectionInfo().GoodNodes) {
+                return Math.min(
+                    1.0,
+                    Math.max(
+                        0.1,
+                        this.connectionInfo().GoodNodes / 32
+                    )
+                );
+            } else if (this.connectionInfo().UnknownNodes) {
+                return 0.05;
+            }
+        },
+        findPeers: new DHTFindPeersModel()
+    };
 })
 
 .factory('DHTFindPeersModel', function() {
@@ -40,55 +85,3 @@ angular.module('jbitor.app', [])
     return DHTFindPeersModel;
 })
 
-.factory('DHTStatusModel', function(
-    $interval
-) {
-    function DHTStatusModel(updateInterval) {
-        this.nodeCounts = {
-            GoodNodes: 0,
-            UnknownNodes: 0,
-            BadNodes: 0,
-        };
-    }
-
-    DHTStatusModel.prototype.health = function() {
-        if (this.nodeCounts.GoodNodes) {
-            return Math.min(
-                1.0,
-                Math.max(
-                    0.1,
-                    this.nodeCounts.GoodNodes / 32
-                )
-            );
-        } else if (this.nodeCounts.UnknownNodes) {
-            return 0.05;
-        }
-    }
-
-    DHTStatusModel.prototype.startUpdating = function(interval, $scope) {
-        var that = this;
-
-        var intervalPromise = $interval(function() {
-            that.updateNodeCounts($scope);
-        }, interval);
-
-        $scope.$on('$destroy', function() {
-            $interval.cancel(intervalPromise);
-        });
-    }
-
-    DHTStatusModel.prototype.updateNodeCounts = function($scope) {
-        var that = this;
-
-        $.getJSON('/api/clientState.json').then(function(state) {
-            $scope.$apply(function() {
-                that.nodeCounts = state['nodeCounts'];
-                $scope.findPeers.requests = state['peerRequests'];
-            });
-        }, function(err) {
-            console.error("Failed to get update node counts", err);
-        });
-    }
-
-    return DHTStatusModel;
-});

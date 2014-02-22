@@ -54,15 +54,28 @@ func (wc *T) ListenAndServe() (err error) {
 	return http.ListenAndServe(wc.addr, nil)
 }
 
+func (wc *T) serializePeerRequests() (serialized []interface{}) {
+	for _, peerRequest := range wc.peerRequests {
+		serialized = append(serialized, peerRequest)
+	}
+	return
+}
+
+func (wc *T) serialize() (serialized map[string]interface{}) {
+	return map[string]interface{}{
+		"dht": map[string]interface{}{
+			"peerRequests":   wc.serializePeerRequests(),
+			"connectionInfo": wc.dhtClient.ConnectionInfo(),
+		},
+	}
+}
+
 func (wc *T) handleClientState(w http.ResponseWriter, r *http.Request) {
 	logger.Printf("Serving clientState.json to %v.\n", r.RemoteAddr)
 
-	s, err := json.Marshal(map[string]interface{}{
-		"peerRequests": wc.peerRequests,
-		"nodeCounts":   wc.dhtClient.ConnectionInfo(),
-	})
+	s, err := json.Marshal(wc.serialize())
 	if err != nil {
-		logger.Fatalf("How did JSON encoding possibly fail? %v", err)
+		logger.Fatalf("JSON encoding failed: %v", err)
 		return
 	}
 

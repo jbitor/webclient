@@ -21,6 +21,13 @@
     ng-controller="jbitorAppController"
   >
     <div class="container">
+      <div ng-if="connectionError" class="alert alert-danger">
+        <h4>Disconnected</h4>
+        <p>
+          This client is currently disconnected from the jbitor process.
+        </p>
+      </div>
+
       <div class="row">
         <div class="col-sm-6">
           <ng-include src="'/_s/ng-templates/dht-status.html'" />

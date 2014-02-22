@@ -11,7 +11,7 @@
       from these peers.
     </p>
 
-    <form ng-submit="findPeers.onSubmit($event)">
+    <form ng-submit="dht.findPeers.onSubmit($event)">
       <div class="form-group">
         <label>
           Torrent infohash:
@@ -19,14 +19,14 @@
         <input
           class="form-control btid"
           placeholder="e3811b9539cacff680e418124272177c47477157"
-          ng-model="findPeers.infohash"
+          ng-model="dht.findPeers.infohash"
         ></input>
       </div>
       <div class="form-group text-center">
         <button
           type="submit"
           class="btn btn-primary"
-          ng-disabled="!findPeers.infohash"
+          ng-disabled="!dht.findPeers.infohash"
         >
           Find Peers
         </button>
@@ -34,7 +34,7 @@
     </form>
   </div>
     <table
-      ng-if="findPeers.requests"
+      ng-if="dht.peerRequests()"
       class="table table-condensed"
       style="width: 100%;"
     >
@@ -44,7 +44,7 @@
         <th></th>
       </tr>
       <tr
-        ng-repeat="request in findPeers.requests"
+        ng-repeat="request in dht.peerRequests()"
         ng-class="{
           success: request.Peers.length > 1,
           warning: request.Peers.length == 1
