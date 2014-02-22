@@ -5,3 +5,7 @@ body {
 .btid {
     font-family: monospace;
 }
+
+.torrent-table td {
+    vertical-align: middle !important;
+}
