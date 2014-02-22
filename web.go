@@ -8,21 +8,15 @@ import (
 	"path/filepath"
 )
 
-type peerRequest struct {
-	HexInfohash string
-	infohash    bittorrent.BTID
-	Peers       []*bittorrent.RemotePeer
-}
-
 type T struct {
-	peerRequests []*peerRequest
+	peerSearches []*dht.GetPeersSearch
 	dhtClient    dht.Client
 	addr         string
 	staticPath   string
 }
 
 func NewForDhtClient(dhtClient dht.Client) (wc T, err error) {
-	wc.peerRequests = make([]*peerRequest, 0)
+	wc.peerSearches = make([]*dht.GetPeersSearch, 0)
 	wc.dhtClient = dhtClient
 
 	wc.addr = "127.0.0.1:47935"
@@ -46,7 +40,7 @@ func (wc *T) ListenAndServe() (err error) {
 
 	http.HandleFunc("/api/clientState.json", wc.handleClientState)
 
-	http.HandleFunc("/api/peerRequest", wc.handlePeerRequest)
+	http.HandleFunc("/api/peerSearch", wc.handlePeerSearch)
 
 	http.Handle("/", http.StripPrefix(
 		"/", http.FileServer(http.Dir(wc.staticPath))))
@@ -54,9 +48,22 @@ func (wc *T) ListenAndServe() (err error) {
 	return http.ListenAndServe(wc.addr, nil)
 }
 
-func (wc *T) serializePeerRequests() (serialized []interface{}) {
-	for _, peerRequest := range wc.peerRequests {
-		serialized = append(serialized, peerRequest)
+func (wc *T) serializePeerSearches() (serialized []interface{}) {
+	serialized = make([]interface{}, 0)
+
+	for _, search := range wc.peerSearches {
+		peersFound := make([]interface{}, 0)
+		for _, peer := range search.PeersFound {
+			// TODO: serialize peers usefully
+			peersFound = append(peersFound, peer.String())
+		}
+
+		serialized = append(serialized, map[string]interface{}{
+			"infohash":     search.Infohash.String(),
+			"peers":        peersFound,
+			"finished":     search.Finished(),
+			"queriedNodes": len(search.QueriedNodes),
+		})
 	}
 	return
 }
@@ -64,7 +71,7 @@ func (wc *T) serializePeerRequests() (serialized []interface{}) {
 func (wc *T) serialize() (serialized map[string]interface{}) {
 	return map[string]interface{}{
 		"dht": map[string]interface{}{
-			"peerRequests":   wc.serializePeerRequests(),
+			"peerSearches":   wc.serializePeerSearches(),
 			"connectionInfo": wc.dhtClient.ConnectionInfo(),
 		},
 	}
@@ -84,32 +91,14 @@ func (wc *T) handleClientState(w http.ResponseWriter, r *http.Request) {
 }
 
 // XXX(JB): No CSRF protection or anything.
-func (wc *T) handlePeerRequest(w http.ResponseWriter, r *http.Request) {
+func (wc *T) handlePeerSearch(w http.ResponseWriter, r *http.Request) {
 	hexInfohash := r.FormValue("infohash")
 	infohash, err := bittorrent.BTIDFromHex(hexInfohash)
 	if err != nil {
 		panic("BTID shouldn't have been invalid!")
 	}
 
-	peerRequest := peerRequest{
-		hexInfohash,
-		infohash,
-		nil,
-	}
+	peerSearch := wc.dhtClient.GetPeers(infohash)
 
-	wc.peerRequests = append(wc.peerRequests, &peerRequest)
-
-	go func() {
-		peers, err := wc.dhtClient.GetPeers(infohash)
-		if err != nil {
-			// XXX(JB): obviouly a bad way of handling errors
-			peerRequest.HexInfohash = "error"
-			return
-		}
-
-		logger.Printf("Got peers for %v: %v.",
-			peerRequest.infohash, peers)
-
-		peerRequest.Peers = peers
-	}()
+	wc.peerSearches = append(wc.peerSearches, peerSearch)
 }

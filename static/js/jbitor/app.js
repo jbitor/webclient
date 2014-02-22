@@ -19,7 +19,7 @@ angular.module('jbitor.app', [])
     $scope.clientState = {
         dht: {
             connectionInfo: {},
-            peerRequests: []
+            peerSearches: []
         },
     };
 
@@ -46,8 +46,8 @@ angular.module('jbitor.app', [])
         connectionInfo: function() {
             return $scope.clientState.dht.connectionInfo;
         },
-        peerRequests: function() {
-            return $scope.clientState.dht.peerRequests;
+        peerSearches: function() {
+            return $scope.clientState.dht.peerSearches;
         },
         health: function() {
             if (this.connectionInfo().GoodNodes) {
@@ -74,7 +74,7 @@ angular.module('jbitor.app', [])
     }
 
     DHTFindPeersModel.prototype.onSubmit = function(event) {
-        $.post('/api/peerRequest', {
+        $.post('/api/peerSearch', {
             infohash: this.infohash
         });
 

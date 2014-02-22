@@ -32,46 +32,54 @@
         </button>
       </div>
     </form>
-  </div>
-    <table
-      ng-if="dht.peerRequests()"
-      class="table table-condensed"
-      style="width: 100%;"
-    >
-      <tr>
-        <th>infohash</th>
-        <th>status</th>
-        <th>download</th>
-      </tr>
-      <tr
-        ng-repeat="request in dht.peerRequests()"
-        ng-class="{
-          success: request.Peers.length > 1,
-          warning: request.Peers.length == 1
-        }"
+      <table
+        ng-if="dht.peerSearches()"
+        class="table table-condensed"
+        style="width: 100%;"
       >
-        <td class="btid" title="{{request.HexInfohash}}">
-          {{request.HexInfohash.slice(0, 8)}}…
-        </td>
+        <tr>
+          <th>infohash</th>
+          <th>status</th>
+          <th>download</th>
+        </tr>
+        <tr
+          ng-repeat="search in dht.peerSearches()"
+          ng-class="{
+            success: search.peers.length > 1 &amp;&amp; search.finished,
+            info: search.peers.length > 1 &amp;&amp; !search.finished,
+            warning: search.peers.length == 1,
+            danger: search.peers.length == 0 &amp;&amp; search.finished
+          }"
+        >
+          <td class="btid" title="{{search.infohash}}">
+            {{search.infohash.slice(0, 8)}}…
+          </td>
 
-        <td>
-          <span ng-if="request.Peers.length > 1">
-            found {{request.Peers.length}} peers
-          </span>
-          <span ng-if="request.Peers.length == 1">
-            found 1 peer
-          </span>
-          <span ng-if="!request.Peers || request.Peers.length < 1">
-            searching
-          </span>
-        </td>
+          <td
+            title="found {{search.peers &amp;&amp; search.peers.length || 'no'}} peers with {{search.queriedNodes}} queries"
+          >
+            <span ng-if="!(search.peers &amp;&amp; search.peers.length) &amp;&amp; !search.finished">
+              searching ({{search.queriedNodes}} queries)
+            </span>
+            <span ng-if="search.peers.length > 1">
+              found {{search.peers.length}} peers
+            </span>
+            <span ng-if="search.peers.length == 1">
+              found 1 peer
+            </span>
+            <span ng-if="!(search.peers &amp;&amp; search.peers.length) &amp;&amp; search.finished">
+              failed ({{search.queriedNodes}} queries)
+            </span>
+          </td>
 
-        <td>
-          <a href="magnet:?xt=urn:btih:{{request.HexInfohash}}">
-            <span class="glyphicon glyphicon-download-alt"></span>
-            magnet
-          </a>
-        </td>
-      </tr>
+          <td>
+            <a href="magnet:?xt=urn:btih:{{search.infohash}}">
+              <span class="glyphicon glyphicon-download-alt"></span>
+              magnet
+            </a>
+          </td>
+        </tr>
+      </table>
+    </div>
   </div>
 </div>
