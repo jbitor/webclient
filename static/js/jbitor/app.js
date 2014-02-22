@@ -23,7 +23,7 @@ angular.module('jbitor.app', [])
 
 .factory('DHTFindPeersModel', function() {
     function DHTFindPeersModel() {
-        this.infohash = '';
+        this.infohash = 'e3811b9539cacff680e418124272177c47477157';
 
         this.requests = []
     }

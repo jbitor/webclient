@@ -15,14 +15,14 @@ type peerRequest struct {
 }
 
 type T struct {
-	peerRequests []peerRequest
+	peerRequests []*peerRequest
 	dhtClient    dht.Client
 	addr         string
 	staticPath   string
 }
 
 func NewForDhtClient(dhtClient dht.Client) (wc T, err error) {
-	wc.peerRequests = make([]peerRequest, 0)
+	wc.peerRequests = make([]*peerRequest, 0)
 	wc.dhtClient = dhtClient
 
 	wc.addr = "127.0.0.1:47935"
@@ -72,17 +72,31 @@ func (wc *T) handleClientState(w http.ResponseWriter, r *http.Request) {
 
 // XXX(JB): No CSRF protection or anything.
 func (wc *T) handlePeerRequest(w http.ResponseWriter, r *http.Request) {
-	hexInfohash := "3c44dd30710c4d98d8ded1612428d7f9b3a6e44e"
+	hexInfohash := r.FormValue("infohash")
 	infohash, err := bittorrent.BTIDFromHex(hexInfohash)
 	if err != nil {
 		panic("BTID shouldn't have been invalid!")
 	}
 
-	wc.peerRequests = append(
-		wc.peerRequests,
-		peerRequest{
-			hexInfohash,
-			infohash,
-			nil,
-		})
+	peerRequest := peerRequest{
+		hexInfohash,
+		infohash,
+		nil,
+	}
+
+	wc.peerRequests = append(wc.peerRequests, &peerRequest)
+
+	go func() {
+		peers, err := wc.dhtClient.GetPeers(infohash)
+		if err != nil {
+			// XXX(JB): obviouly a bad way of handling errors
+			peerRequest.HexInfohash = "error"
+			return
+		}
+
+		logger.Printf("Got peers for %v: %v.",
+			peerRequest.infohash, peers)
+
+		peerRequest.Peers = peers
+	}()
 }
