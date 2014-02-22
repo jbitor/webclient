@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/jbitor/bittorrent"
 	"github.com/jbitor/dht"
+	"github.com/soheilhy/glosure"
 	"net/http"
 	"path/filepath"
 )
@@ -35,12 +36,19 @@ func (wc *T) ListenAndServe() (err error) {
 	logger.Printf("Serving web client of %v at %v.\n",
 		wc.staticPath, wc.addr)
 
-	http.Handle("/_s/", http.StripPrefix(
-		"/_s/", http.FileServer(http.Dir(wc.staticPath))))
-
 	http.HandleFunc("/api/clientState.json", wc.handleClientState)
 
 	http.HandleFunc("/api/peerSearch", wc.handlePeerSearch)
+
+	http.Handle("/_s/", http.StripPrefix(
+		"/_s/", http.FileServer(http.Dir(wc.staticPath))))
+
+	compiler := glosure.NewCompiler(wc.staticPath)
+	compiler.CompilationLevel = glosure.WhiteSpaceOnly
+	// We use Angular's friendly syntax which doesn't support much minification
+
+	http.Handle("/_c/", http.StripPrefix(
+		"/_c/", glosure.GlosureServer(compiler)))
 
 	http.Handle("/", http.StripPrefix(
 		"/", http.FileServer(http.Dir(wc.staticPath))))
