@@ -1,0 +1,31 @@
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">DHT: Nodes</h3>
+  </div>
+  <div class="panel-body text-center">
+    <div class="container theme-showcase" style="width: 100%;">
+      <div class="progress">
+        <div
+          ng-class="{
+            'progress-bar': true,
+            'progress-bar-success':
+              dht.health() >= 0.5,
+            'progress-bar-warning':
+              dht.health() > 0.05 &amp;&amp;
+              dht.health() < 0.2,
+            'progress-bar-danger':
+              dht.health() <= 0.05
+          }"
+          style="width: {{100.0 * dht.health()}}%"
+        >
+        </div>
+      </div>
+
+      <div>
+        <strong>{{ dht.nodeCounts.GoodNodes }}</strong> good nodes,
+        <strong>{{ dht.nodeCounts.UnknownNodes }}</strong> unknown nodes, and
+        <strong>{{ dht.nodeCounts.BadNodes }}</strong> bad nodes.
+      </div>
+    </div>
+  </div>
+</div>

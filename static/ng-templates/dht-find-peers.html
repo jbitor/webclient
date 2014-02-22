@@ -1,0 +1,74 @@
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">
+      DHT: Find Peers
+    </h3>
+  </div>
+  <div class="panel-body">
+    <p>
+      Find peers for a torrent from the DHT, and generate
+      a magnet link that can be used to start downloading
+      from these peers.
+    </p>
+
+    <form ng-submit="findPeers.onSubmit($event)">
+      <div class="form-group">
+        <label>
+          Torrent infohash:
+        </label>
+        <input
+          class="form-control btid"
+          placeholder="3c44dd30710c4d98d8ded1612428d7f9b3a6e44e"
+          ng-model="findPeers.infohash"
+        ></input>
+      </div>
+      <div class="form-group text-center">
+        <button
+          type="submit"
+          class="btn btn-primary"
+          ng-disabled="!findPeers.infohash"
+        >
+          Find Peers
+        </button>
+      </div>
+    </form>
+  </div>
+    <table
+      ng-if="findPeers.requests"
+      class="table table-condensed"
+      style="width: 100%;"
+    >
+      <tr>
+        <th>infohash</th>
+        <th>status</th>
+        <th></th>
+      </tr>
+      <tr
+        ng-repeat="request in findPeers.requests"
+        ng-class="{
+          success: request.peers.length > 1,
+          warning: request.peers.length == 1
+        }"
+      >
+        <td class="btid" title="{{request.infohash}}">
+          {{request.infohash.slice(0, 8)}}…
+        </td>
+
+        <td>
+          <span ng-if="request.peers.length > 1">
+            found {{request.peers.length}} peers
+          </span>
+          <span ng-if="request.peers.length == 1">
+            found 1 peer
+          </span>
+          <span ng-if="request.peers.length < 1">
+            searching
+          </span>
+        </td>
+
+        <td>
+          <a href="magnet:?xt=urn:btih:{{request.infohash}}" disabled>download</a>
+        </td>
+      </tr>
+  </div>
+</div>

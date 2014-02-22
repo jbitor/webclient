@@ -13,93 +13,21 @@
     <script src="/_s/js/angular-1.2.13.js"></script>
     <script src="/_s/js/bootstrap-3.1.1.js"></script>
 
-    <script src="/_s/js/client.js"></script>
+    <script src="/_s/js/jbitor/app.js"></script>
   </head>
   <body
     ng-cloak
-    ng-app="jbitor.client"
-    ng-controller="jbitorClientController"
+    ng-app="jbitor.app"
+    ng-controller="jbitorAppController"
   >
     <div class="container">
       <div class="row">
         <div class="col-sm-6">
-          <div class="panel panel-default">
-            <div class="panel-heading">
-              <h3 class="panel-title">DHT: Nodes</h3>
-            </div>
-            <div class="panel-body text-center">
-              <div class="container theme-showcase" style="width: 100%;">
-                <div class="progress">
-                  <div
-                    ng-class="{
-                      'progress-bar': true,
-                      'progress-bar-success':
-                        dht.health() >= 0.5,
-                      'progress-bar-warning':
-                        dht.health() > 0.05 &&
-                        dht.health() < 0.2,
-                      'progress-bar-danger':
-                        dht.health() <= 0.05
-                    }"
-                    style="width: {{100.0 * dht.health()}}%"
-                  >
-                  </div>
-                </div>
-
-                <div>
-                  <strong>{{ dht.nodeCounts.GoodNodes }}</strong> good nodes,
-                  <strong>{{ dht.nodeCounts.UnknownNodes }}</strong> unknown nodes, and
-                  <strong>{{ dht.nodeCounts.BadNodes }}</strong> bad nodes.
-                </div>
-              </div>
-            </div>
-          </div>
+          <ng-include src="'/_s/ng-templates/dht-status.html'" />
         </div>
 
         <div class="col-sm-6">
-          <div class="panel panel-default">
-            <div class="panel-heading">
-              <h3 class="panel-title">
-                DHT: Find Peers
-              </h3>
-            </div>
-            <div class="panel-body">
-              <p>
-                Find peers for a torrent from the DHT, and generate
-                a magnet link that can be used to start downloading
-                from these peers.
-              </p>
-
-              <form ng-submit="findPeers.onSubmit($event)">
-                <div class="form-group">
-                  <label>
-                    Torrent infohash:
-                  </label>
-                  <input
-                    class="form-control btid-control"
-                    placeholder="3c44dd30710c4d98d8ded1612428d7f9b3a6e44e"
-                    ng-model="findPeers.infohash"
-                  ></input>
-                </div>
-                <div class="form-group text-center">
-                  <button
-                    type="submit"
-                    class="btn btn-primary"
-                    ng-disabled="!findPeers.infohash"
-                  >
-                    Find Peers
-                  </button>
-                </div>
-              </form>
-            </div>
-            <div class="panel-body" style="border-top: 2px solid #ddd;">
-              <h4>Results</h4>
-
-              <p>
-                Not implemented.
-              </p>
-            </div>
-          </div>
+          <ng-include src="'/_s/ng-templates/dht-find-peers.html'" />
         </div>
       </div>
     </div>
