@@ -41,7 +41,7 @@
       <tr>
         <th>infohash</th>
         <th>status</th>
-        <th></th>
+        <th>download</th>
       </tr>
       <tr
         ng-repeat="request in dht.peerRequests()"
@@ -67,7 +67,10 @@
         </td>
 
         <td>
-          <a href="magnet:?xt=urn:btih:{{request.HexInfohash}}" disabled>download</a>
+          <a href="magnet:?xt=urn:btih:{{request.HexInfohash}}">
+            <span class="glyphicon glyphicon-download-alt"></span>
+            magnet
+          </a>
         </td>
       </tr>
   </div>
