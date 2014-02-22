@@ -46,28 +46,28 @@
       <tr
         ng-repeat="request in findPeers.requests"
         ng-class="{
-          success: request.peers.length > 1,
-          warning: request.peers.length == 1
+          success: request.Peers.length > 1,
+          warning: request.Peers.length == 1
         }"
       >
-        <td class="btid" title="{{request.infohash}}">
-          {{request.infohash.slice(0, 8)}}…
+        <td class="btid" title="{{request.HexInfohash}}">
+          {{request.HexInfohash.slice(0, 8)}}…
         </td>
 
         <td>
-          <span ng-if="request.peers.length > 1">
-            found {{request.peers.length}} peers
+          <span ng-if="request.Peers.length > 1">
+            found {{request.Peers.length}} peers
           </span>
-          <span ng-if="request.peers.length == 1">
+          <span ng-if="request.Peers.length == 1">
             found 1 peer
           </span>
-          <span ng-if="request.peers.length < 1">
+          <span ng-if="!request.Peers || request.Peers.length < 1">
             searching
           </span>
         </td>
 
         <td>
-          <a href="magnet:?xt=urn:btih:{{request.infohash}}" disabled>download</a>
+          <a href="magnet:?xt=urn:btih:{{request.HexInfohash}}" disabled>download</a>
         </td>
       </tr>
   </div>

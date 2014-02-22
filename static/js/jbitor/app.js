@@ -16,42 +16,28 @@ angular.module('jbitor.app', [])
     DHTFindPeersModel
 ) {
     $scope.dht = new DHTStatusModel();
-    $scope.dht.startUpdating(2500, $scope);
+    $scope.dht.startUpdating(750, $scope);
 
     $scope.findPeers = new DHTFindPeersModel();
 })
 
-.factory('DHTFindPeersModel', function(
-    DHTFindPeersRequest
-) {
+.factory('DHTFindPeersModel', function() {
     function DHTFindPeersModel() {
         this.infohash = '';
 
-        this.requests = [
-            new DHTFindPeersRequest('3c44dd30710c4d98d8ded1612428d7f9b3a6e44e'),
-            new DHTFindPeersRequest('612428d7f9b3a6e44e4dd30710c4d98d8ded13c4'),
-            new DHTFindPeersRequest('e4dd30710c4d98d8ded13c4612428d7f9b3a6e44')
-        ]
-
-        this.requests[1].peers = [7];
-        this.requests[2].peers = [1, 2, 3];
+        this.requests = []
     }
 
     DHTFindPeersModel.prototype.onSubmit = function(event) {
+        $.post('/api/peerRequest', {
+            infohash: this.infohash
+        });
+
         this.infohash = '';
         event.preventDefault();
     }
 
     return DHTFindPeersModel;
-})
-
-.factory('DHTFindPeersRequest', function() {
-    function DHTFindPeersRequest(infohash) {
-        this.infohash = infohash;
-        this.peers = [];
-    }
-
-    return DHTFindPeersRequest
 })
 
 .factory('DHTStatusModel', function(
@@ -94,9 +80,10 @@ angular.module('jbitor.app', [])
     DHTStatusModel.prototype.updateNodeCounts = function($scope) {
         var that = this;
 
-        $.getJSON('/api/nodeCounts.json').then(function(nodeCounts) {
+        $.getJSON('/api/clientState.json').then(function(state) {
             $scope.$apply(function() {
-                that.nodeCounts = nodeCounts;
+                that.nodeCounts = state['nodeCounts'];
+                $scope.findPeers.requests = state['peerRequests'];
             });
         }, function(err) {
             console.error("Failed to get update node counts", err);
