@@ -1,14 +1,12 @@
 <div class="panel panel-default">
   <div class="panel-heading">
     <h3 class="panel-title">
-      Find Torrent Swarm Peers from DHT
+      Find Torrent Peers from DHT
     </h3>
   </div>
   <div class="panel-body">
     <p>
-      Find peers for a torrent from the DHT, and generate
-      a magnet link that can be used to start downloading
-      from these peers.
+      Find peers for a torrent from the DHT.
     </p>
 
     <form ng-submit="dht.findPeers.onSubmit($event)">
@@ -32,54 +30,57 @@
         </button>
       </div>
     </form>
-      <table
-        ng-if="dht.peerSearches()"
-        class="table table-condensed"
-        style="width: 100%;"
+
+    <table
+      ng-if="dht.peerSearches()"
+      class="table table-condensed"
+      style="width: 100%;"
+    >
+      <tr>
+        <th>infohash</th>
+        <th>download</th>
+        <th>status</th>
+      </tr>
+      <tr
+        ng-repeat="search in dht.peerSearches()"
+        ng-class="{
+          success: search.peers.length > 1 &amp;&amp; search.finished,
+          info: search.peers.length > 1 &amp;&amp; !search.finished,
+          warning: search.peers.length == 1,
+          danger: search.peers.length == 0 &amp;&amp; search.finished
+        }"
       >
-        <tr>
-          <th>infohash</th>
-          <th>status</th>
-          <th>download</th>
-        </tr>
-        <tr
-          ng-repeat="search in dht.peerSearches()"
-          ng-class="{
-            success: search.peers.length > 1 &amp;&amp; search.finished,
-            info: search.peers.length > 1 &amp;&amp; !search.finished,
-            warning: search.peers.length == 1,
-            danger: search.peers.length == 0 &amp;&amp; search.finished
-          }"
-        >
-          <td class="btid" title="{{search.infohash}}">
-            {{search.infohash.slice(0, 8)}}…
-          </td>
+        <td class="btid" title="{{search.infohash}}">
+          {{search.infohash.slice(0, 8)}}…
+        </td>
 
-          <td
-            title="found {{search.peers &amp;&amp; search.peers.length || 'no'}} peers with {{search.queriedNodes}} queries"
+        <td>
+          <a
+            href="magnet:?xt=urn:btih:{{search.infohash}}"
+            title="Download torrent (does not include peers or metadata)"
           >
-            <span ng-if="!(search.peers &amp;&amp; search.peers.length) &amp;&amp; !search.finished">
-              searching ({{search.queriedNodes}} queries)
-            </span>
-            <span ng-if="search.peers.length > 1">
-              found {{search.peers.length}} peers
-            </span>
-            <span ng-if="search.peers.length == 1">
-              found 1 peer
-            </span>
-            <span ng-if="!(search.peers &amp;&amp; search.peers.length) &amp;&amp; search.finished">
-              failed ({{search.queriedNodes}} queries)
-            </span>
-          </td>
+            <span class="glyphicon glyphicon-download-alt"></span>
+            magnet
+          </a>
+        </td>
 
-          <td>
-            <a href="magnet:?xt=urn:btih:{{search.infohash}}">
-              <span class="glyphicon glyphicon-download-alt"></span>
-              magnet
-            </a>
-          </td>
-        </tr>
-      </table>
-    </div>
+        <td
+          title="found {{search.peers &amp;&amp; search.peers.length || 'no'}} peers with {{search.queriedNodes}} queries"
+        >
+          <span ng-if="!(search.peers &amp;&amp; search.peers.length) &amp;&amp; !search.finished">
+            searching ({{search.queriedNodes}} queries)
+          </span>
+          <span ng-if="search.peers.length > 1">
+            found {{search.peers.length}} peers
+          </span>
+          <span ng-if="search.peers.length == 1">
+            found 1 peer
+          </span>
+          <span ng-if="!(search.peers &amp;&amp; search.peers.length) &amp;&amp; search.finished">
+            failed ({{search.queriedNodes}} queries)
+          </span>
+        </td>
+      </tr>
+    </table>
   </div>
 </div>
