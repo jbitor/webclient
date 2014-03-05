@@ -57,7 +57,7 @@ class Node
 exports.Graph =
 class Graph
   constructor: (@originDistances, nodes) ->
-    if not (@originDistances >= 0.0 && @originDistances < 1.0)
+    if not (@originDistances >= 0.0 && @originDistances <= 1.0)
       throw new Error("originDistances=" + @originDistances)
 
     @originA = new Node(0.0, originDistances, null, 'rgba(255, 0, 0, 0.75)');

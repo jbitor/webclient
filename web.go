@@ -62,7 +62,7 @@ func (wc *T) serializePeerSearches() (serialized []interface{}) {
 			"infohash":     search.Infohash.String(),
 			"peers":        peersFound,
 			"finished":     search.Finished(),
-			"queriedNodes": len(search.QueriedNodes),
+			"queriedNodes": search.QueriedNodes,
 		})
 	}
 	return
