@@ -1,4 +1,5 @@
 var gulp = require('gulp');
+var gutil = require('gulp-util');
 var browserify = require('gulp-browserify');
 var concat = require('gulp-concat');
 var sass = require('gulp-sass');
@@ -14,6 +15,7 @@ gulp.task('compile-coffee', function() {
       extensions: ['.coffee'],
       debug: !!"yes, I want source maps"
     }))
+      .on('error', gutil.log)
     .pipe(concat('scripts.gen.js'))
     .pipe(gulp.dest('static'));
 });
@@ -23,6 +25,7 @@ gulp.task('compile-sass', function() {
   return gulp
     .src(sassPaths)
     .pipe(sass())
+      .on('error', gutil.log)
     .pipe(concat('styles.gen.css'))
     .pipe(gulp.dest('static'));
 });
