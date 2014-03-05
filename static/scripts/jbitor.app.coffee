@@ -35,8 +35,16 @@ exports.controller 'jbitorAppController', (
     jQuery('canvas').remove()
 
     for search in newValue.peerSearches
-      nodes = for id, info of search.queriedNodes
-        new twodistances.Node(0.49 + Math.random()*0.51, 0.49 + Math.random()*0.51, null)
+      nodes = []
+
+      for id, info of search.queriedNodes
+        d1 = Math.random()
+        d2 = Math.random() * d1 + (1.0 - d1)
+
+        origin = if Math.random() > 0.5 and nodes
+          nodes[0 | (Math.random() * nodes.length)]
+
+        nodes.push new twodistances.Node(d1, d2, origin)
 
       graph = new twodistances.Graph(1.0, nodes)
       graph.canvas.style.display = 'block'

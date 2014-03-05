@@ -90,8 +90,8 @@ class Graph
 
     @draw()
 
-  _defaultSize: 256
-  _defaultPadding: 16
+  _defaultSize: 256 * 3
+  _defaultPadding: 16 * 3
 
   # Transform internal coordinates (relative to .originA)
   # into a canvas coordinates.
@@ -110,7 +110,7 @@ class Graph
 
         @graphics.strokeStyle = node.color || 'rgba(128, 128, 128, 1.0)';
         @graphics.fillStyle = node.color || 'rgba(0, 0, 0, 1.0)';
-        @graphics.lineWidth = @scale / 128;
+        @graphics.lineWidth = @scale / 256;
 
         # Drag the nodes after drawing the lines and borders.
         if pass == 2
@@ -118,7 +118,7 @@ class Graph
             @graphics.arc(
                 @transformX(coordinates.x),
                 @transformY(coordinates.y),
-                @scale / 32,
+                @scale / 64,
                 0.0,
                 2.0 * Math.PI,
                 true)
