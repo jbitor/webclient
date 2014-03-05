@@ -1,6 +1,6 @@
 # All distances must be between 0.0 and 1.0.
 
-exports.Coordinates =
+exports.Coordmnates =
 class Coordinates
   constructor: (@x, @y) ->
 
@@ -30,15 +30,15 @@ class Node
 
   setTwoDistances: (@twoDistances) ->
     # it is an error if the distances sum to less than the direct origin distances
-    if (@distanceA + @distanceB < @twoDistances.originDistances)
-      console.error "Distances are impossibly small.", @distanceA, @distanceB
-      throw new Error("Distances are impossibly small.", this)
+    # if (@distanceA + @distanceB < @twoDistances.originDistances)
+      # console.error "Distances are impossibly small.", @distanceA, @distanceB
+      # throw new Error("Distances are impossibly small.", this)
 
 
     # or if difference between the distances is larger than the direct origin distances
-    if (Math.abs(@distanceA - @distanceB) > @twoDistances.originDistances)
-      console.error "Distances are impossibly far apart.", @distanceA, @distanceB
-      throw new Error("Distances are impossibly far apart.", this)
+    # if (Math.abs(@distanceA - @distanceB) > @twoDistances.originDistances)
+      # console.error "Distances are impossibly far apart.", @distanceA, @distanceB
+      # throw new Error("Distances are impossibly far apart.", this)
 
 
   coordinates: ->
@@ -75,13 +75,13 @@ class Graph
       node.setTwoDistances @
 
     # The interior space filled by the graphic.
-    @_xOffset = 0.5 * (1.0 - @originDistances)
+    @_xOffset = 1 * (1.0 - @originDistances)
     @_yOffset = 0
 
     @size = @_defaultSize
     @padding = @_defaultPadding
 
-    @scale = @size - 2 * @padding
+    @scale = (@size - 2 * @padding) / 2.0
 
     @canvas = document.createElement('canvas')
     @canvas.width = @canvas.height = @size
@@ -90,8 +90,8 @@ class Graph
 
     @draw()
 
-  _defaultSize: 256 * 3
-  _defaultPadding: 16 * 3
+  _defaultSize: 256
+  _defaultPadding: 16
 
   # Transform internal coordinates (relative to .originA)
   # into a canvas coordinates.
@@ -105,14 +105,14 @@ class Graph
     @graphics.clearRect 0, 0, @width, @height
 
     for pass in [1, 2]
-      for node in @nodes
+      for node in @nodes.slice(0).reverse()
         coordinates = node.coordinates();
 
         @graphics.strokeStyle = node.color || 'rgba(128, 128, 128, 1.0)';
         @graphics.fillStyle = node.color || 'rgba(0, 0, 0, 1.0)';
         @graphics.lineWidth = @scale / 256;
 
-        # Drag the nodes after drawing the lines and borders.
+        # Draw the nodes after the sources
         if pass == 2
             @graphics.beginPath()
             @graphics.arc(
@@ -127,8 +127,8 @@ class Graph
             @graphics.stroke()
             @graphics.closePath()
             continue
-
-        if node.source
+        else
+          if node.source
             sourceCoordinates = node.source.coordinates()
 
             @graphics.beginPath()
@@ -138,32 +138,6 @@ class Graph
             @graphics.lineTo(
                 @transformX(sourceCoordinates.x),
                 @transformY(sourceCoordinates.y))
-            @graphics.stroke()
-            @graphics.closePath()
-
-        # XXX(JB): for testing, draw lines to origins
-        if (node != @originA && node != @originB)
-            @graphics.beginPath()
-            @graphics.lineWidth = 0.25
-            @graphics.strokeStyle = @originA.color
-            @graphics.moveTo(
-                @transformX(coordinates.x),
-                @transformY(coordinates.y))
-            @graphics.lineTo(
-                @transformX(@originA.coordinates().x),
-                @transformY(@originA.coordinates().y))
-            @graphics.stroke()
-            @graphics.closePath()
-
-            @graphics.beginPath()
-            @graphics.lineWidth = 0.25
-            @graphics.strokeStyle = @originB.color
-            @graphics.moveTo(
-                @transformX(coordinates.x),
-                @transformY(coordinates.y))
-            @graphics.lineTo(
-                @transformX(@originB.coordinates().x),
-                @transformY(@originB.coordinates().y))
             @graphics.stroke()
             @graphics.closePath()
 

@@ -30,24 +30,24 @@ exports.controller 'jbitorAppController', (
 
     # HACK: using jQuery
 
-    console.log(newValue)
-
     jQuery('canvas').remove()
 
     for search in newValue.peerSearches
       nodesById = {}
 
       for key, node of search.queriedNodes
-        nodesById[node.id] = new twodistances.Node(node.localDistance, node.targetDistance)
+        nodesById[node.id] = new twodistances.Node(
+          Math.log(node.localDistance + 1.0) / Math.log(2.0),
+          Math.log(node.targetDistance + 1.0) / Math.log(2.0))
 
       for key, node of search.queriedNodes
-        if node.originId
-          nodesById[node.id].origin = nodesById[node.originId]
+        if node.sourceId
+          nodesById[node.id].source = nodesById[node.sourceId]
 
       nodes = (node for _, node of nodesById)
 
       graph = new twodistances.Graph(search.searchDistance, nodes)
-      graph.canvas.style.display = 'block'
+      graph.canvas.style.border = '1px solid black';
       jQuery('body').prepend(graph.canvas)
 
     @
@@ -56,7 +56,6 @@ exports.controller 'jbitorAppController', (
   # Constantly reload the clientState from the server.
   intervalPromise = $interval ->
     jQuery.getJSON('/api/clientState.json').then (state) ->
-      console.log "Got state", state
       $scope.$apply ->
         $scope.connectionError = null;
         $scope.clientState = state;

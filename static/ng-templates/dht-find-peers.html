@@ -65,10 +65,10 @@
         </td>
 
         <td
-          title="found {{search.peers &amp;&amp; search.peers.length || 'no'}} peers with {{search.queriedNodes}} queries"
+          title="found {{search.peers &amp;&amp; search.peers.length || 'no'}} peers with {{search.queriedNodesCount}} queries"
         >
           <span ng-if="!(search.peers &amp;&amp; search.peers.length) &amp;&amp; !search.finished">
-            searching ({{search.queriedNodes}} queries)
+            searching ({{search.queriedNodesCount}} queries)
           </span>
           <span ng-if="search.peers.length > 1">
             found {{search.peers.length}} peers
@@ -77,7 +77,7 @@
             found 1 peer
           </span>
           <span ng-if="!(search.peers &amp;&amp; search.peers.length) &amp;&amp; search.finished">
-            failed ({{search.queriedNodes}} queries)
+            failed ({{search.queriedNodesCount}} queries)
           </span>
         </td>
       </tr>
