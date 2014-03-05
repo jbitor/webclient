@@ -1,13 +1,14 @@
+var browserify = require('gulp-browserify');
+var clean = require('gulp-clean');
+var coffeeify = require('coffeeify');
+var concat = require('gulp-concat');
 var gulp = require('gulp');
 var gutil = require('gulp-util');
-var browserify = require('gulp-browserify');
-var concat = require('gulp-concat');
 var sass = require('gulp-sass');
-var coffeeify = require('coffeeify');
 
 var coffeePaths = ['static/scripts/**/*.coffee'];
 var mainCoffeePath = ['static/scripts/main.coffee'];
-gulp.task('compile-coffee', function() {
+gulp.task('compile-coffee', ['clean-js'], function() {
   return gulp
     .src(mainCoffeePath, {read: false})
     .pipe(browserify({
@@ -21,7 +22,7 @@ gulp.task('compile-coffee', function() {
 });
 
 var sassPaths = ['static/styles/**/*.scss'];
-gulp.task('compile-sass', function() {
+gulp.task('compile-sass', ['clean-css'], function() {
   return gulp
     .src(sassPaths)
     .pipe(sass())
@@ -30,13 +31,28 @@ gulp.task('compile-sass', function() {
     .pipe(gulp.dest('static'));
 });
 
+gulp.task('clean-js', function() {
+  return gulp
+    .src(['**/*.gen.js'], {read: false})
+    .pipe(clean())
+
+});
+
+gulp.task('clean-css', function() {
+  return gulp
+    .src(['**/*.gen.js'], {read: false})
+    .pipe(clean())
+});
+
 gulp.task('watch-all', function() {
   gulp.watch(coffeePaths, ['compile-coffee']);
   gulp.watch(sassPaths, ['compile-sass']);
 });
 
-gulp.task('default', [
-  'compile-coffee',
-  'compile-sass',
-  'watch-all'
-]);
+gulp.task('default', function() {
+  gulp.start(
+    'compile-coffee',
+    'compile-sass',
+    'watch-all'
+  );
+});
