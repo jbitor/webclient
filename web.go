@@ -59,12 +59,33 @@ func (wc *T) serializePeerSearches() (serialized []interface{}) {
 		}
 
 		serialized = append(serialized, map[string]interface{}{
-			"infohash":     search.Infohash.String(),
-			"peers":        peersFound,
-			"finished":     search.Finished(),
-			"queriedNodes": search.QueriedNodes,
+			"infohash":       search.Infohash.String(),
+			"searchDistance": search.Infohash.BitDistance(wc.dhtClient.Id()),
+			"peers":          peersFound,
+			"finished":       search.Finished(),
+			"queriedNodes":   wc.serializeQueriedNodes(search.QueriedNodes, search.Infohash),
 		})
 	}
+	return
+}
+
+func (wc *T) serializeQueriedNodes(queriedNodes map[string]*dht.RemoteNode, target bittorrent.BTID) (serialized map[string]interface{}) {
+	serialized = make(map[string]interface{}, 0)
+
+	for key, node := range queriedNodes {
+		var sourceId string
+		if node.Source != nil {
+			sourceId = node.Source.Id.String()
+		}
+
+		serialized[key] = map[string]interface{}{
+			"id":             node.Id.String(),
+			"sourceId":       sourceId,
+			"localDistance":  node.Id.BitDistance(wc.dhtClient.Id()),
+			"targetDistance": node.Id.BitDistance(target),
+		}
+	}
+
 	return
 }
 
