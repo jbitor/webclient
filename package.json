@@ -1,0 +1,11 @@
+{
+  "dependencies": {
+    "angular": "~1.2.10",
+    "jquery": "~1.11.0",
+    "gulp-browserify": "~0.4.6",
+    "coffeeify": "~0.6.0",
+    "gulp-concat": "~2.1.7",
+    "gulp-sass": "~0.7.1",
+    "gulp": "~3.5.5"
+  }
+}

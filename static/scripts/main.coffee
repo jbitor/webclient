@@ -1,3 +1,7 @@
+window.angular = require 'angular'
+window.jQuery = window.$ = require 'jquery'
+
+`
 'use strict';
 
 angular.module('jbitor.app', [])
@@ -5,7 +9,7 @@ angular.module('jbitor.app', [])
 // We define a new HREF whitelist which includes magnet URLs.
 .config(function(
     $compileProvider
-) {   
+) {
     $compileProvider.aHrefSanitizationWhitelist(
         /^\s*(https?|ftp|mailto|magnet):/);
 })
@@ -84,4 +88,4 @@ angular.module('jbitor.app', [])
 
     return DHTFindPeersModel;
 })
-
+`
