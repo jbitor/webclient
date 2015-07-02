@@ -2,10 +2,11 @@ package webclient
 
 import (
 	"encoding/json"
-	"github.com/jbitor/bittorrent"
-	"github.com/jbitor/dht"
 	"net/http"
 	"path/filepath"
+
+	"github.com/jbitor/bittorrent"
+	"github.com/jbitor/dht"
 )
 
 type T struct {
