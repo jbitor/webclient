@@ -24,6 +24,68 @@ h1 code, h1 input {
   background: transparent;
 }
 
+input[disabled] {
+  opacity: 0;
+  animation-name: active;
+  animation-duration: 2s;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+}
+
+@keyframes active {
+  0% {
+    opacity: 1.0;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+
+  100% {
+    opacity: 1.0;
+  }
+}
+
+input.successful {
+  animation-name: successful;
+  animation-duration: 5s;
+  animation-fill-mode: forwards;
+}
+
+@keyframes successful {
+  0% {
+    color: black;
+  }
+
+  5% {
+    color: lime
+  }
+
+  100% {
+    color: black;
+  }
+}
+
+input.error {
+  animation-name: error;
+  animation-duration: 5s;
+  animation-fill-mode: forwards;
+}
+
+@keyframes error {
+  0% {
+    color: black;
+  }
+
+  5% {
+    color: red
+  }
+
+  100% {
+    color: black;
+  }
+}
+
 h1 span {
   color: red;
 }
