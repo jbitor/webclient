@@ -5,14 +5,16 @@ document.addEventListener('DOMContentLoaded', function() {
   input.focus();
   input.setSelectionRange(input.value.length, input.value.length);
 
-  setInterval(function() {
+  setTimeout(function f() {
     fetch('/api/clientState.json').then(function(response) {
       return response.json();
     }).then(function(responseData) {
       document.querySelector('#clientState').textContent =
           JSON.stringify(responseData, null, 2);
-    });
-  }, 4000);
+    }).then(
+      setTimeout.bind(window, f, 200),
+      setTimeout.bind(window, f, 1000));
+  });
 
   function peerSearch(infohash) {
     var data = new FormData;
