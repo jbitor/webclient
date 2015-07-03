@@ -20,7 +20,7 @@ func NewForDhtClient(dhtClient dht.Client) (wc T, err error) {
 	wc.peerSearches = make([]*dht.GetPeersSearch, 0)
 	wc.dhtClient = dhtClient
 
-	wc.addr = "127.0.0.1:47935"
+	wc.addr = "0.0.0.0:8080"
 
 	// XXX(JB): This is pretty horrible because it badly relies on the CWD.
 	path, err := filepath.Abs("./src/github.com/jbitor/webclient/static/")
