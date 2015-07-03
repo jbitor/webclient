@@ -53,16 +53,10 @@ func (wc *T) serializePeerSearches() (serialized []interface{}) {
 	serialized = make([]interface{}, 0)
 
 	for _, search := range wc.peerSearches {
-		peersFound := make([]interface{}, 0)
-		for _, peer := range search.PeersFound {
-			// TODO: serialize peers usefully
-			peersFound = append(peersFound, peer.String())
-		}
-
 		serialized = append(serialized, map[string]interface{}{
 			"infohash":          search.Infohash.String(),
 			"searchDistance":    search.Infohash.BitDistance(wc.dhtClient.Id()),
-			"peers":             peersFound,
+			"peers":             search.PeersFound,
 			"finished":          search.Finished(),
 			"queriedNodes":      wc.serializeQueriedNodes(search.QueriedNodes, search.Infohash),
 			"queriedNodesCount": len(search.QueriedNodes),

@@ -1,39 +1,70 @@
 <!doctype html>
 <html>
-  <head>
-    <title>jbitor</title>
+<head>
+  <meta charset="utf-8" />
+  <title>torrent.directory</title>
 
-    <meta name="robots" content="noindex nofollow" />
+  <meta name="robots" content="noindex nofollow noarchive" />
 
-    <link rel="stylesheet" href="/_s/styles.gen.css"></link>
-    <script src="/_s/scripts.gen.js"></script>
+  <link rel="stylesheet" href="/_s/styles.css"></link>
+  <script src="/_s/scripts.js"></script>
 
-    <link rel="stylesheet" href="/_s/vendor/bootstrap/css/bootstrap-3.1.1.css"></link>
-    <link rel="stylesheet" href="/_s/vendor/bootstrap/css/bootstrap-theme-3.1.1.css"></link>
-    <script src="/_s/vendor/bootstrap/js/bootstrap-3.1.1.js"></script>
-  </head>
-  <body
-    ng-cloak
-    ng-app="jbitor.app"
-    ng-controller="jbitorAppController"
-  >
-    <div class="container">
-      <div ng-if="connectionError" class="alert alert-danger">
-        <h4>Disconnected</h4>
-        <p>
-          This client is currently disconnected from the jbitor process.
-        </p>
+  <link rel="stylesheet" href="/_s/vendor/bootstrap/css/bootstrap-3.1.1.css"></link>
+  <link rel="stylesheet" href="/_s/vendor/bootstrap/css/bootstrap-theme-3.1.1.css"></link>
+</head>
+<body>
+  <main><form>
+    <h1>
+      <div>
+        <a href="">torrent<span>.</span>directory</a><wbr
+        /><span>/</span><input name="bith" value="" autofocus placeholder="0ea3904962 enter an infohash e2a0d503098" maxlength="40" />
       </div>
+    </h1>
 
-      <div class="row">
-        <div class="col-sm-6">
-          <ng-include src="'/_s/ng-templates/dht-status.html'" />
-        </div>
+    <pre id="clientState">Loading...</pre>
 
-        <div class="col-sm-6">
-          <ng-include src="'/_s/ng-templates/dht-find-peers.html'" />
-        </div>
-      </div>
+    <!--
+
+    <div class="nav">
+      <a href="//torrent.directory/0ea39049afdbaaea255ca1d0af662e2a0d503098.torrent">Torrent File</a>
+      <a href="magnet:?xt=urn:btih:0ea39049afdbaaea255ca1d0af662e2a0d503098">Magnet Link</a>
     </div>
-  </body>
+
+    <ul>
+      <li>
+        <h2>Stack Exchange Data Dump - March 2013/ <em title="1333541351B">13.3GB</em></h2>
+        <ul>
+          <li>README/ <em title="123B">13KB</em></li>
+          <li>
+            Sites/ <em title="123B">19KB</em>
+            <ul>
+              <li>Stack Overflow.zip <em title="123B">49KB</em></li>
+              <li>Super User.zip <em title="123B">18KB</em></li>
+            </ul>
+          </li>
+          <li>
+            Docs/ <em title="123B">4KB</em>
+            <ul>
+              <li>Stack Overflow.zip <em title="123B">49KB</em></li>
+              <li>
+                Details/ <em title="123B">4KB</em>
+                <ul>
+                  <li>Stack Overflow.zip <em title="123B">49KB</em></li>
+                  <li>Super User.zip <em title="123B">18KB</em></li>
+                </ul>
+              </li>
+              <li>Stack Overflow.zip <em title="123B">49KB</em></li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+    </ul>
+
+    <p class="searching">
+      Searching for torrent metadata...
+    </p>
+
+    -->
+  </form></main>
+</body>
 </html>
