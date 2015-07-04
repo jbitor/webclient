@@ -1,13 +1,5 @@
 package webclient
 
-import (
-	"log"
-	"os"
-)
+import "github.com/op/go-logging"
 
-var logger *log.Logger
-
-// Initializes the logger for this package, using os.Stderr.
-func init() {
-	logger = log.New(os.Stderr, "[  webclient  ] ", log.Lshortfile)
-}
+var logger = logging.MustGetLogger("webclient")

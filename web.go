@@ -33,7 +33,7 @@ func NewForDhtClient(dhtClient dht.Client) (wc T, err error) {
 }
 
 func (wc *T) ListenAndServe() (err error) {
-	logger.Printf("Serving web client of %v at %v.\n",
+	logger.Info("Serving web client of %v at %v.\n",
 		wc.staticPath, wc.addr)
 
 	http.Handle("/_s/", http.StripPrefix(
@@ -95,7 +95,7 @@ func (wc *T) serialize() (serialized map[string]interface{}) {
 }
 
 func (wc *T) handleClientState(w http.ResponseWriter, r *http.Request) {
-	logger.Printf("Serving clientState.json to %v.\n", r.RemoteAddr)
+	logger.Info("Serving clientState.json to %v.\n", r.RemoteAddr)
 
 	s, err := json.Marshal(wc.serialize())
 	if err != nil {
