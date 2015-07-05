@@ -22,11 +22,6 @@ document.addEventListener('DOMContentLoaded', function() {
   magnetLink.href = 'magnet:?xt=urn:btih:' + infohash;
   document.querySelector('.nav').appendChild(magnetLink);
 
-  var torrent = document.createElement('a');
-  torrent.textContent = 'Download Torrent';
-  torrent.href = '/' + infohash + '.torrent';
-  document.querySelector('.nav').appendChild(torrent);
-
   var info = document.querySelector('#info');
   var infoPre = document.createElement('pre');
   infoPre.textContent = "Loading torrent info...";
@@ -35,6 +30,13 @@ document.addEventListener('DOMContentLoaded', function() {
   fetch('/' + infohash + '.json').then(function(response) {
     return response.json();
   }).then(function(data) {
+    var torrent = document.createElement('a');
+    torrent.textContent = 'Download Torrent';
+    torrent.href = '/' + infohash + '.torrent';
+    document.querySelector('.nav').appendChild(torrent);
+
     infoPre.textContent = JSON.stringify(data, null, 2);
+    
+    magnetLink.href += "&dn=" + encodeURIComponent(data['name'])
   })
 });
