@@ -23,7 +23,11 @@ document.addEventListener('DOMContentLoaded', function() {
       method: 'POST',
       body: data
     }).then(function(response) {
-      console.info("Started peer search.");
+      if (response.status !== 200) {
+        throw new Error("response status code " + response.status)
+      } else {
+        console.info("Started peer search.");
+      }
     }, function(error) {
       console.error("Unable to initiate peer search due to error:", error);
       throw error;

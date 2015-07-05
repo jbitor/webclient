@@ -22,7 +22,7 @@ func NewForDhtClient(dhtClient dht.Client) (wc T, err error) {
 
 	wc.addr = "0.0.0.0:8080"
 
-	// XXX(JB): This is pretty horrible because it badly relies on the CWD.
+	// HACK
 	path, err := filepath.Abs("./src/github.com/jbitor/webclient/static/")
 	if err != nil {
 		return
