@@ -1,10 +1,10 @@
 package webclient
 
 import (
+	"encoding/json"
 	"io/ioutil"
 	"net/http"
 	"path/filepath"
-	"strings"
 
 	"github.com/jbitor/bencoding"
 	"github.com/jbitor/bittorrent"
@@ -53,26 +53,30 @@ func (wc *T) handleRequest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	path := r.URL.Path[1:]
-	pieces := strings.Split(path, ".")
-	btih, _ = bittorrent.BTIDFromHex(pieces[0])
-
-	if len(pieces) == 1 {
-		wc.handleTorrentPageRequest(w, r, btih)
+	if len(r.URL.Path) < 21 {
+		logger.Error("404 unexpected %v", r.URL.Path)
 		return
-	} else if len(pieces) == 2 {
-		extension := pieces[1]
+	}
 
-		switch extension {
-		case "torrent":
-			wc.handleTorrentFileRequest(w, r, btih)
-			return
-		default:
-			logger.Error("404 extension %v", extension)
-			return
-		}
-	} else {
-		logger.Error("404 path components %v", path)
+	btih, err := bittorrent.BTIDFromHex(r.URL.Path[1:41])
+	if err != nil {
+		logger.Error("got request for invalid BTID: %v", err)
+		return
+	}
+
+	extension := string(r.URL.Path[41:])
+
+	switch extension {
+	case "":
+		wc.handleTorrentPageRequest(w, r, btih)
+	case ".torrent":
+		wc.handleTorrentFileRequest(w, r, btih)
+		return
+	case ".json":
+		wc.handleTorrentJsonInfoRequest(w, r, btih)
+		return
+	default:
+		logger.Error("404 extension %v", extension)
 		return
 	}
 
@@ -103,33 +107,53 @@ func (wc *T) handleTorrentQueryRequest(w http.ResponseWriter, r *http.Request, i
 // /INFOHASH
 //
 func (wc *T) handleTorrentPageRequest(w http.ResponseWriter, r *http.Request, infoHash bittorrent.BTID) {
+	logger.Notice("Serving %v page request", infoHash)
+
+	// Temporarily doing this client-side
+	wc.handleIndex(w, r)
+	return
+
+	// TODO: Get rid of all JavaScript.
 	// Use a Refresh header to reload while we don't have the metadata.
-	panic("NOT IMPLEMENTED")
 }
 
 // /INFOHASH.torrent
 //
 func (wc *T) handleTorrentFileRequest(w http.ResponseWriter, r *http.Request, infoHash bittorrent.BTID) {
-	w.Header().Set("Content Type", "application/x-bittorrent")
-	data, _ := bencoding.Encode(bencoding.Dict{
-		"info": wc.btClient.Swarm(infoHash, wc.dhtClient.GetPeers(infoHash).ReadNewPeers()).Info(),
+	logger.Notice("Serving %v.torrent file request", infoHash)
+
+	data, err := bencoding.Encode(bencoding.Dict{
+		"info":          wc.btClient.Swarm(infoHash, wc.dhtClient.GetPeers(infoHash).ReadNewPeers()).Info(),
+		"announce-list": bencoding.List{},
+		"nodes":         bencoding.List{},
 	})
+	if err != nil {
+		logger.Error("unable to encode torrent: %v", err)
+		return
+	}
+	w.Header().Set("Content Type", "application/x-bittorrent")
 	w.Write(data)
 }
 
 // /INFOHASH.json
 // Subset of torrent metadata in prety JSON format. Excludes info other than names and sizes.
 func (wc *T) handleTorrentJsonInfoRequest(w http.ResponseWriter, r *http.Request, infoHash bittorrent.BTID) {
-	// s, err := json.Marshal(wc.serialize())
-	// if err != nil {
-	// 	logger.Fatalf("JSON encoding failed: %v", err)
-	// 	return
-	// }
+	logger.Notice("Serving %v.json request", infoHash)
 
-	// w.Header().Set("Content-Type", "text/html")
-	// w.Write(s)
+	info := wc.btClient.Swarm(infoHash, wc.dhtClient.GetPeers(infoHash).ReadNewPeers()).Info()
+	// Info() is mutable/shared -- don't edit it.
 
-	panic("NOT IMPLEMENTED")
+	s, err := json.Marshal(bencoding.Dict{
+		"name": info["name"],
+	})
+	if err != nil {
+		logger.Fatalf("JSON encoding failed: %v", err)
+		return
+	}
+
+	w.Header().Set("Content-Type", "text/json")
+	w.Write(s)
+
 }
 
 func (wc *T) ListenAndServe() (err error) {
