@@ -122,8 +122,10 @@ func (wc *T) handleTorrentPageRequest(w http.ResponseWriter, r *http.Request, in
 func (wc *T) handleTorrentFileRequest(w http.ResponseWriter, r *http.Request, infoHash bittorrent.BTID) {
 	logger.Notice("Serving %v.torrent file request", infoHash)
 
+	info := wc.btClient.Swarm(infoHash, wc.dhtClient.GetPeers(infoHash).ReadNewPeers()).Info()
+
 	data, err := bencoding.Encode(bencoding.Dict{
-		"info":          wc.btClient.Swarm(infoHash, wc.dhtClient.GetPeers(infoHash).ReadNewPeers()).Info(),
+		"info":          info,
 		"announce-list": bencoding.List{},
 		"nodes":         bencoding.List{},
 	})
@@ -131,7 +133,9 @@ func (wc *T) handleTorrentFileRequest(w http.ResponseWriter, r *http.Request, in
 		logger.Error("unable to encode torrent: %v", err)
 		return
 	}
-	w.Header().Set("Content Type", "application/x-bittorrent")
+	w.Header().Set("Content-Type", "application/x-bittorrent")
+	// TODO: encode filename & filenmae8* properly
+	w.Header().Set("Content-Disposition", "attachment;filename="+string(info["name"].(bencoding.String))+".bittorrent")
 	w.Write(data)
 }
 
