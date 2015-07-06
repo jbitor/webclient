@@ -8,7 +8,7 @@ import (
 
 	"github.com/jbitor/bencoding"
 	"github.com/jbitor/bittorrent"
-	"github.com/jbitor/dht"
+	"github.com/jbitor/bittorrent/dht"
 )
 
 type T struct {
@@ -134,8 +134,8 @@ func (wc *T) handleTorrentFileRequest(w http.ResponseWriter, r *http.Request, in
 		return
 	}
 	w.Header().Set("Content-Type", "application/x-bittorrent")
-	// TODO: encode filename & filenmae8* properly
-	w.Header().Set("Content-Disposition", "attachment;filename="+string(info["name"].(bencoding.String))+".bittorrent")
+	// TODO: encode filename & filename* properly
+	w.Header().Set("Content-Disposition", "attachment;filename="+string(info["name"].(bencoding.String))+".torrent")
 	w.Write(data)
 }
 
